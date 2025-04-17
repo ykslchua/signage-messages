@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/message.json",
+      "destination": "/api/message"
+    }
+  ]
+}
