@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text to JSON for LED Billboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-xl">
+    <h1 class="text-2xl font-bold mb-4 text-center">Send Text to LED Billboard</h1>
+
+    <label class="block mb-2 text-gray-700 font-semibold" for="textInput">Enter Message:</label>
+    <textarea id="textInput" rows="4" class="w-full p-2 border border-gray-300 rounded mb-4" placeholder="Type your message here..."></textarea>
+
+    <div class="mb-4">
+      <label class="text-gray-700 text-sm font-bold">Generated JSON:</label>
+      <pre id="jsonPreview" class="bg-gray-100 p-4 text-xs h-32 overflow-auto border border-gray-300"></pre>
+    </div>
+
+    <div class="mb-4">
+      <label class="text-gray-700 text-sm font-bold">Preview:</label>
+      <div id="previewDisplay" class="bg-black text-green-400 text-center p-4 text-lg font-mono rounded h-24 flex items-center justify-center">
+        Your message will appear here
+      </div>
+    </div>
+
+    <button onclick="sendJson()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full">
+      Send to Signage Studio
+    </button>
+
+    <div id="status" class="mt-4 text-center text-sm"></div>
+  </div>
+
+  <script>
+    function sendJson() {
+      const message = document.getElementById('textInput').value.trim();
+      if (!message) {
+        document.getElementById('status').textContent = '❌ Please enter a message.';
+        return;
+      }
+
+      const timestamp = new Date().toISOString();
+      const jsonData = {
+        message: message,
+        timestamp: timestamp
+      };
+
+      // Show preview and JSON
+      document.getElementById('previewDisplay').textContent = message;
+      document.getElementById('jsonPreview').textContent = JSON.stringify(jsonData, null, 2);
+
+      fetch('https://signage-messages.vercel.app/api/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonData)
+      })
+      .then(response => {
+        if (response.ok) {
+          document.getElementById('status').textContent = '✅ Message sent successfully!';
+        } else {
+          document.getElementById('status').textContent = '❌ Error sending message.';
+        }
+      })
+      .catch(error => {
+        document.getElementById('status').textContent = '⚠️ Network or server error.';
+        console.error(error);
+      });
+    }
+  </script>
+</body>
+</html>
