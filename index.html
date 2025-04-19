@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Text to JSON for LED Billboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -26,7 +26,7 @@
     </div>
 
     <button onclick="sendJson()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full">
-      Send to Signage Studio
+      Send to GitHub & Update Billboard
     </button>
 
     <div id="status" class="mt-4 text-center text-sm"></div>
@@ -41,27 +41,26 @@
       }
 
       const timestamp = new Date().toISOString();
-      const jsonData = {
-        message: message,
-        timestamp: timestamp
-      };
+      const jsonData = { message, timestamp };
 
       // Show preview and JSON
       document.getElementById('previewDisplay').textContent = message;
       document.getElementById('jsonPreview').textContent = JSON.stringify(jsonData, null, 2);
 
-      fetch('https://signage-messages.vercel.app/api/message', {
+      // Call the Vercel API endpoint
+      fetch('/api/message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(jsonData)
       })
-      .then(response => {
-        if (response.ok) {
-          document.getElementById('status').textContent = '✅ Message sent successfully!';
+      .then(response => response.json())
+      .then(data => {
+        if (data.status) {
+          document.getElementById('status').textContent = '✅ Message sent and committed to GitHub!';
         } else {
-          document.getElementById('status').textContent = '❌ Error sending message.';
+          document.getElementById('status').textContent = `❌ ${data.error || 'Unknown error'}`;
         }
       })
       .catch(error => {
