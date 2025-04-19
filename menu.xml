@@ -1,5 +1,6 @@
 <BurgerMenu source="POS SalesMate DS-100">
-	<Burger size="S" name="ChickenBurger" oz="2.5" price="$6.50"
+	<Burger size="S" name="ChickenBurger" oz="2.5" price="6.50" currency="USD" 
 	resource="https://github.com/ykslchua/signage-messages/tree/main/images">
 		<ID>10560440</ID>
 	</Burger>
+</BurgerMenu>
