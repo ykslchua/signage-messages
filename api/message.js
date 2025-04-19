@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   const fileContent = Buffer.from(JSON.stringify(jsonContent, null, 2)).toString('base64');
 
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN; // add this in your Vercel environment
-  const REPO_OWNER = 'ykslcua';
+  const REPO_OWNER = 'ykslchua';
   const REPO_NAME = 'signage-messages';
   const FILE_PATH = 'object.json'; // can be a folder path too
   const BRANCH = 'main';
