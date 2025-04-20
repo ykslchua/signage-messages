@@ -47,7 +47,6 @@
       document.getElementById('previewDisplay').textContent = message;
       document.getElementById('jsonPreview').textContent = JSON.stringify(jsonData, null, 2);
 
-      // Call the Vercel API endpoint
       fetch('/api/message', {
         method: 'POST',
         headers: {
@@ -68,6 +67,25 @@
         console.error(error);
       });
     }
+
+    // Automatically fetch object.json on load
+    async function fetchMessage() {
+      const url = 'https://raw.githubusercontent.com/ykslchua/signage-messages/main/object.json?cache=' + Date.now();
+      try {
+        const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
+        if (!response.ok) throw new Error('Failed to fetch message');
+        const data = await response.json();
+
+        document.getElementById('previewDisplay').textContent = data.message;
+        document.getElementById('jsonPreview').textContent = JSON.stringify(data, null, 2);
+        document.getElementById('status').textContent = '📥 Latest message loaded from GitHub.';
+      } catch (err) {
+        console.error(err);
+        document.getElementById('status').textContent = '❌ Error loading message from GitHub.';
+      }
+    }
+
+    window.onload = fetchMessage;
   </script>
 </body>
 </html>
