@@ -1,6 +1,0 @@
-<BurgerMenu source="POS SalesMate DS-100">
-	<Burger size="S" name="ChickenBurger" oz="2.5" price="6.50" currency="USD" 
-	resource="https://raw.githubusercontent.com/ykslchua/signage-messages/main/images/burger.png">
-		<ID>10560440</ID>
-	</Burger>
-</BurgerMenu>
