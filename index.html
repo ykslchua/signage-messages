@@ -33,59 +33,45 @@
   </div>
 
   <script>
-    function sendJson() {
-      const message = document.getElementById('textInput').value.trim();
-      if (!message) {
-        document.getElementById('status').textContent = '❌ Please enter a message.';
-        return;
-      }
-
-      const timestamp = new Date().toISOString();
-      const jsonData = { message, timestamp };
-
-      // Show preview and JSON
-      document.getElementById('previewDisplay').textContent = message;
-      document.getElementById('jsonPreview').textContent = JSON.stringify(jsonData, null, 2);
-
-      fetch('/api/message', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(jsonData)
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status) {
-          document.getElementById('status').textContent = '✅ Message sent and committed to GitHub!';
-        } else {
-          document.getElementById('status').textContent = `❌ ${data.error || 'Unknown error'}`;
-        }
-      })
-      .catch(error => {
-        document.getElementById('status').textContent = '⚠️ Network or server error.';
-        console.error(error);
-      });
+  function sendJson() {
+    const message = document.getElementById('textInput').value.trim();
+    if (!message) {
+      document.getElementById('status').innerHTML = '❌ Please enter a message.';
+      return;
     }
 
-    // Automatically fetch object.json on load
-    async function fetchMessage() {
-      const url = 'https://raw.githubusercontent.com/ykslchua/signage-messages/main/object.json?cache=' + Date.now();
-      try {
-        const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
-        if (!response.ok) throw new Error('Failed to fetch message');
-        const data = await response.json();
+    const timestamp = new Date().toISOString();
+    const jsonData = { message, timestamp };
 
-        document.getElementById('previewDisplay').textContent = data.message;
-        document.getElementById('jsonPreview').textContent = JSON.stringify(data, null, 2);
-        document.getElementById('status').textContent = '📥 Latest message loaded from GitHub.';
-      } catch (err) {
-        console.error(err);
-        document.getElementById('status').textContent = '❌ Error loading message from GitHub.';
+    // Show preview and JSON
+    document.getElementById('previewDisplay').textContent = message;
+    document.getElementById('jsonPreview').textContent = JSON.stringify(jsonData, null, 2);
+
+    // Call the Vercel API endpoint
+    fetch('/api/message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(jsonData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status) {
+        document.getElementById('status').innerHTML = `
+          ✅ Message sent and committed to GitHub!<br>
+          🖥️ <span class="text-green-600 font-medium">You can now view this message on your signage display.</span>
+        `;
+      } else {
+        document.getElementById('status').innerHTML = `❌ ${data.error || 'Unknown error'}`;
       }
-    }
+    })
+    .catch(error => {
+      document.getElementById('status').innerHTML = '⚠️ Network or server error.';
+      console.error(error);
+    });
+  }
+</script>
 
-    window.onload = fetchMessage;
-  </script>
 </body>
 </html>
